@@ -1,2 +1,2 @@
-add_executable(utctime_unittest UtcTime_unittest.cpp)
-target_link_libraries(utctime_unittest cppevt_base)
+add_executable(Timestamp_unittest Timestamp_unittest.cpp)
+target_link_libraries(Timestamp_unittest cppevt_base)

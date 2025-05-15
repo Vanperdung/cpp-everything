@@ -4,7 +4,7 @@
 #include <net/NonCopyable.h>
 
 #include <base/Types.h>
-#include <base/UtcTime.h>
+#include <base/Timestamp.h>
 
 #include <functional>
 
@@ -16,7 +16,7 @@ class Timer : private NonCopyable
 public:
     typedef std::function<void()> TimerCallback;
 
-    Timer(const TimerCallback& cb, UtcTime& expiration, const double interval);
+    Timer(const TimerCallback& cb, Timestamp& expiration, const double interval);
     ~Timer() = default;
 
     void run();
@@ -28,7 +28,7 @@ private:
     TimerCallback cb_;
     bool isRepeat_;
     double interval_;
-    UtcTime expiration_;
+    Timestamp expiration_;
 };
 
 } // namespace cppevt

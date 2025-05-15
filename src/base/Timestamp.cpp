@@ -1,4 +1,4 @@
-#include <base/UtcTime.h>
+#include <base/Timestamp.h>
 
 #include <sys/time.h>
 
@@ -9,17 +9,17 @@
 
 using namespace cppevt;
 
-UtcTime::UtcTime()
+Timestamp::Timestamp()
     : microSecondsSinceEpoch_(0)
 {
 }
 
-UtcTime::UtcTime(uint64_t microSeconds)
+Timestamp::Timestamp(uint64_t microSeconds)
     : microSecondsSinceEpoch_(microSeconds)
 {
 }
 
-void UtcTime::now()
+void Timestamp::now()
 {
     struct timeval tv;
 
@@ -27,7 +27,7 @@ void UtcTime::now()
     microSecondsSinceEpoch_ = tv.tv_sec * kMicroSecondsPerSecond + tv.tv_usec;
 }
 
-std::string UtcTime::toString() const
+std::string Timestamp::toString() const
 {
     uint64_t seconds = microSecondsSinceEpoch_ / kMicroSecondsPerSecond;
     uint64_t microSeconds = microSecondsSinceEpoch_ % kMicroSecondsPerSecond;
@@ -35,7 +35,7 @@ std::string UtcTime::toString() const
     return formatTimeStamp(seconds, microSeconds);
 }
 
-std::string UtcTime::formatTimeStamp(uint64_t seconds, uint64_t microSeconds) const
+std::string Timestamp::formatTimeStamp(uint64_t seconds, uint64_t microSeconds) const
 {
     std::ostringstream oss;
     oss << seconds << "." << std::setw(6) << std::setfill('0') << microSeconds;

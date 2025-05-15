@@ -1,5 +1,5 @@
 set(base_SRCS
-    UtcTime.cpp
+    Timestamp.cpp
 )
 
 add_library(cppevt_base ${base_SRCS})

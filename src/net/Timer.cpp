@@ -2,7 +2,7 @@
 
 using namespace cppevt;
 
-Timer::Timer(const TimerCallback& cb, UtcTime& expiration, const double interval)
+Timer::Timer(const TimerCallback& cb, Timestamp& expiration, const double interval)
     : cb_(cb), expiration_(expiration), interval_(interval)
 {
     isRepeat_ = (interval_ > 0);
@@ -24,7 +24,7 @@ void Timer::clear()
 void Timer::repeat()
 {
     if (isRepeat_)
-        expiration_ = UtcTime(interval_ * 1000000 + expiration_.get());
+        expiration_ = Timestamp(interval_ * 1000000 + expiration_.get());
     else
         clear();
 }
