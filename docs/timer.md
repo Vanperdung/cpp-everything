@@ -33,3 +33,19 @@ If no timer expirations have occurred at the time of the **read()**, then the ca
 On success, **timerfd_create()** returns a new file descriptor.  On error, -1 is returned and errno is set to indicate the error.
 
 **timerfd_settime()** and **timerfd_gettime()** return 0 on success; on error they return -1, and set errno to indicate the error.
+
+## timerfd_settime()
+
+This function is used to start or stop the timer referred to by the file descriptor fd.
+
+The **new_value** argument specifies the initial expiration and interval for the timer. The **itimerspec** structure used for this argument is described in [itimerspec](https://man7.org/linux/man-pages/man3/itimerspec.3type.html).
+
+**new_value.it_value** specifies the initial expiraiton of the timer in seconds and nanoseconds. Setting either field of **new_value.it_value** to a nonzero value starts the timer. Otherwise; setting both fields of **new_value.it_value** to a zero value stops the timer.
+
+Setting one or both fields of **new_value.it_interval** to nonzero values specifies the period, in seconds and nanoseconds, for repeated timer expirations after the initial expiration. If both fields of **new_value.it_interval** are zero, the timer expires just once, at the time specified by **new_value.it_value**.
+
+The **flags** argument is a bit mask that can include the following values:
+
+- TFD_TIMER_ABSTIME: should be used.
+
+- TFD_TIMER_CANCEL_ON_SET:
