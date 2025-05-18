@@ -1,0 +1,2 @@
+add_executable(EventLoop_unittest EventLoop_unittest.cpp)
+target_link_libraries(EventLoop_unittest cppevt_net)
