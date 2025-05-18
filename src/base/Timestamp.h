@@ -12,8 +12,8 @@ class Timestamp
 {
 public:
     Timestamp();
+    Timestamp(uint64_t microSeconds);
     ~Timestamp() = default;
-    explicit Timestamp(uint64_t microSeconds);
 
     void now();
     std::string toString() const;

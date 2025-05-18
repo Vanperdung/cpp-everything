@@ -16,19 +16,22 @@ class Timer : private NonCopyable
 public:
     typedef std::function<void()> TimerCallback;
 
-    Timer(const TimerCallback& cb, Timestamp& expiration, const double interval);
+    explicit Timer();
     ~Timer() = default;
 
-    void run();
+    int create();
+    int setExpiration(const Timestamp& expiration);
+
+    int fd() { return fd_; }
+    void callback();
     void setCallback(const TimerCallback& cb) { cb_ = cb; }
-    void repeat();
-    void clear();
 
 private:
     TimerCallback cb_;
     bool isRepeat_;
     double interval_;
     Timestamp expiration_;
+    int fd_;
 };
 
 } // namespace cppevt
