@@ -38,6 +38,8 @@ public:
     void setEventLoopOwner(EventLoop *owner);
     EventLoop* getEventLoopOwner();
 
+    void onEventLoopOwnerDistroyed();
+
     void setEventData(void *data);
 
 private:

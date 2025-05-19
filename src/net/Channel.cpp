@@ -11,7 +11,8 @@ Channel::Channel(int fd)
 
 Channel::~Channel()
 {
-    
+    if (eventLoopOwner_)
+        eventLoopOwner_->deleteChannel(this);
 }
 
 void Channel::set_events(uint32_t events)
@@ -47,4 +48,9 @@ EventLoop* Channel::getEventLoopOwner()
 void Channel::setEventData(void *data)
 {
     eventData_ = data;
+}
+
+void Channel::onEventLoopOwnerDistroyed()
+{
+    eventLoopOwner_ = nullptr;
 }

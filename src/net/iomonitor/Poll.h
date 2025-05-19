@@ -24,6 +24,8 @@ public:
     status_t modifyChannel(Channel *channel) override;
     status_t deleteChannel(Channel *channel) override;
 
+    void detachAllChannels() override;
+
 private:
     
 };

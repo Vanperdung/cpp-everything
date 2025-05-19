@@ -30,3 +30,8 @@ status_t Poll::deleteChannel(Channel *channel)
 {
     return CPPEVT_OK;
 }
+
+void Poll::detachAllChannels()
+{
+    
+}
