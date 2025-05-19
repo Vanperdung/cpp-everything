@@ -4,10 +4,10 @@
 
 int main(int argc, char *argv[])
 {
-    cppevt::Timestamp Timestamp;
-    Timestamp.now();
+    cppevt::Timestamp timestamp;
+    timestamp.now();
 
-    std::cout << Timestamp.toString() << std::endl;
+    std::cout << timestamp.toString() << std::endl;
 
     return 0;
 }

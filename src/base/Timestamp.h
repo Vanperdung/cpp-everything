@@ -5,6 +5,8 @@
 
 #include <string>
 
+#include <time.h>
+
 namespace cppevt
 {
 
@@ -12,37 +14,38 @@ class Timestamp
 {
 public:
     Timestamp();
-    Timestamp(uint64_t microSeconds);
+    Timestamp(struct timespec timestamp);
     ~Timestamp() = default;
 
     void now();
     std::string toString() const;
-    uint64_t get() const { return microSecondsSinceEpoch_; }
-    bool isValid() { return (microSecondsSinceEpoch_ > 0); }
+    struct timespec get() const { return timestamp_; }
 
     bool operator==(const Timestamp& ts) 
-    { return (microSecondsSinceEpoch_ == ts.get()); }
-    bool operator<(const Timestamp& ts)
-    { return (microSecondsSinceEpoch_ < ts.get()); }
-    bool operator>(const Timestamp& ts)
-    { return (microSecondsSinceEpoch_ > ts.get()); }
+    {
+        if (timestamp_.tv_sec == ts.get().tv_sec &&
+            timestamp_.tv_nsec == ts.get().tv_nsec)
+            return true;
+
+        return false;
+    }
     Timestamp& operator=(const Timestamp& ts)
     {
-        microSecondsSinceEpoch_ = ts.get();
-        return *this;
-    }
-    Timestamp& operator=(uint64_t microSeconds)
-    {
-        microSecondsSinceEpoch_ = microSeconds;
-        return *this;
-    }
+        timestamp_.tv_sec = ts.get().tv_sec;
+        timestamp_.tv_nsec = ts.get().tv_nsec;
 
-    static const int kMicroSecondsPerSecond = 1000 * 1000;
+        return *this;
+    }
+    Timestamp& operator=(struct timespec timestamp)
+    {
+        timestamp_.tv_sec = timestamp.tv_sec;
+        timestamp_.tv_nsec = timestamp.tv_nsec;
+
+        return *this;
+    }
 
 private:
-    std::string formatTimeStamp(uint64_t seconds, uint64_t microSeconds) const;
-
-    uint64_t microSecondsSinceEpoch_;
+    struct timespec timestamp_; 
 };
 
 }
