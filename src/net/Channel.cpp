@@ -11,6 +11,7 @@ Channel::Channel(int fd)
 
 Channel::~Channel()
 {
+    
 }
 
 void Channel::set_events(uint32_t events)

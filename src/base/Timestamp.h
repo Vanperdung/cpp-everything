@@ -5,44 +5,63 @@
 
 #include <string>
 
+#include <time.h>
+
 namespace cppevt
 {
 
 class Timestamp
 {
 public:
-    Timestamp();
+    explicit Timestamp();
+    explicit Timestamp(struct timespec timestamp);
+    explicit Timestamp(uint64_t sec, uint64_t nsec);
     ~Timestamp() = default;
-    explicit Timestamp(uint64_t microSeconds);
 
     void now();
     std::string toString() const;
-    uint64_t get() const { return microSecondsSinceEpoch_; }
-    bool isValid() { return (microSecondsSinceEpoch_ > 0); }
+    struct timespec get() const { return timestamp_; }
 
     bool operator==(const Timestamp& ts) 
-    { return (microSecondsSinceEpoch_ == ts.get()); }
-    bool operator<(const Timestamp& ts)
-    { return (microSecondsSinceEpoch_ < ts.get()); }
-    bool operator>(const Timestamp& ts)
-    { return (microSecondsSinceEpoch_ > ts.get()); }
+    {
+        if (timestamp_.tv_sec == ts.get().tv_sec &&
+            timestamp_.tv_nsec == ts.get().tv_nsec)
+            return true;
+
+        return false;
+    }
     Timestamp& operator=(const Timestamp& ts)
     {
-        microSecondsSinceEpoch_ = ts.get();
+        timestamp_.tv_sec = ts.get().tv_sec;
+        timestamp_.tv_nsec = ts.get().tv_nsec;
+
         return *this;
     }
-    Timestamp& operator=(uint64_t microSeconds)
+    Timestamp& operator=(struct timespec timestamp)
     {
-        microSecondsSinceEpoch_ = microSeconds;
+        timestamp_.tv_sec = timestamp.tv_sec;
+        timestamp_.tv_nsec = timestamp.tv_nsec;
+
         return *this;
     }
 
-    static const int kMicroSecondsPerSecond = 1000 * 1000;
+    Timestamp& operator+(const Timestamp& ts)
+    {
+        timestamp_.tv_sec += ts.get().tv_sec;
+        timestamp_.tv_nsec += ts.get().tv_nsec;
+
+        return *this;
+    }
+    Timestamp& operator+(struct timespec timestamp)
+    {
+        timestamp_.tv_sec += timestamp.tv_sec;
+        timestamp_.tv_nsec += timestamp.tv_nsec;
+
+        return *this;
+    }
 
 private:
-    std::string formatTimeStamp(uint64_t seconds, uint64_t microSeconds) const;
-
-    uint64_t microSecondsSinceEpoch_;
+    struct timespec timestamp_; 
 };
 
 }

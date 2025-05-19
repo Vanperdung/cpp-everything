@@ -1,2 +1,5 @@
 add_executable(EventLoop_unittest EventLoop_unittest.cpp)
 target_link_libraries(EventLoop_unittest cppevt_net)
+
+add_executable(Timer_unittest Timer_unittest.cpp)
+target_link_libraries(Timer_unittest cppevt_net)

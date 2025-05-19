@@ -1,43 +1,41 @@
 #include <base/Timestamp.h>
 
-#include <sys/time.h>
-
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include <string.h>
+
+#include <sys/time.h>
 
 using namespace cppevt;
 
 Timestamp::Timestamp()
-    : microSecondsSinceEpoch_(0)
 {
+    memset(&timestamp_, 0, sizeof(struct timespec));
 }
 
-Timestamp::Timestamp(uint64_t microSeconds)
-    : microSecondsSinceEpoch_(microSeconds)
+Timestamp::Timestamp(struct timespec timestamp)
 {
+    timestamp_.tv_sec = timestamp.tv_sec;
+    timestamp_.tv_nsec = timestamp.tv_nsec;
+}
+
+Timestamp::Timestamp(uint64_t sec, uint64_t nsec)
+{
+    timestamp_.tv_sec = sec;
+    timestamp_.tv_nsec = nsec;
 }
 
 void Timestamp::now()
 {
-    struct timeval tv;
-
-    gettimeofday(&tv, NULL);
-    microSecondsSinceEpoch_ = tv.tv_sec * kMicroSecondsPerSecond + tv.tv_usec;
+    ::clock_gettime(CLOCK_MONOTONIC, &timestamp_);
 }
 
 std::string Timestamp::toString() const
 {
-    uint64_t seconds = microSecondsSinceEpoch_ / kMicroSecondsPerSecond;
-    uint64_t microSeconds = microSecondsSinceEpoch_ % kMicroSecondsPerSecond;
-
-    return formatTimeStamp(seconds, microSeconds);
-}
-
-std::string Timestamp::formatTimeStamp(uint64_t seconds, uint64_t microSeconds) const
-{
     std::ostringstream oss;
-    oss << seconds << "." << std::setw(6) << std::setfill('0') << microSeconds;
+    oss << timestamp_.tv_sec << "." << std::setw(9) << \
+        std::setfill('0') << timestamp_.tv_nsec;
     return oss.str();
 }
