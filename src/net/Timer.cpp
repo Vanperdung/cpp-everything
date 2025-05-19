@@ -2,6 +2,7 @@
 
 #include <cstring>
 #include <cerrno>
+#include <iostream>
 
 #include <sys/timerfd.h>
 #include <unistd.h>
@@ -9,61 +10,87 @@
 using namespace cppevt;
 
 Timer::Timer()
-    : cb_(NULL),
-    interval_(-1), 
-    isRepeat_(false),
-    fd_(-1)
+    : repeat_(false),
+    fd_(-1),
+    channel_(fd_)
 {
 }
 
 Timer::~Timer()
 {
     // FIXME: Is it necessary to stop timer before closing?
-    if (fd_ > 0)
+    if (fd_ >= 0)
         ::close(fd_);
 }
 
-int Timer::create()
+status_t Timer::create()
 {
-    int ret = ::timerfd_create(CLOCK_MONOTONIC, TFD_CLOEXEC);
-    if (ret < 0)
-        throw std::runtime_error(std::string("::timerfd_create: ") + std::strerror(errno));
+    int fd = ::timerfd_create(CLOCK_MONOTONIC, TFD_CLOEXEC);
+    if (fd < 0)
+    {
+        std::cerr << "Cannot create timerfd: " << \
+                    std::strerror(errno) << \
+                    std::endl;
+        return CPPEVT_ERROR;
+    }
 
-    return ret;
+    fd_ = fd;
+    channel_.set_fd(fd);
+
+    return CPPEVT_OK;
 }
 
-int Timer::stop()
-{
-    struct itimerspec it;
-
-    
-}
-
-int Timer::setExpiration(const Timestamp& expiration)
+status_t Timer::set(const Timestamp& expiration,
+                        const Timestamp& interval)
 {
     struct itimerspec it;
     memset(&it, 0, sizeof(struct itimerspec));
 
-    it.it_value.tv_sec = expiration.get() / Timestamp::kMicroSecondsPerSecond;
-    it.it_value.tv_nsec = expiration.get() % Timestamp::kMicroSecondsPerSecond;
-    it.it_interval.tv_sec = it.it_value.tv_sec;
-    it.it_interval.tv_nsec = it.it_value.tv_nsec;
+    // Timer expiration
+    it.it_value = expiration.get();
+    
+    // Timer repeatation interval
+    it.it_interval = interval.get();
 
     int ret = ::timerfd_settime(fd_, TFD_TIMER_ABSTIME, &it, NULL);
     if (ret < 0)
-        throw std::runtime_error(std::string("::timerfd_settime: ") + std::strerror(errno));
+    {
+        std::cerr << "Cannot set timerfd: " << \
+                    std::strerror(errno) << \
+                    std::endl;
+        return CPPEVT_ERROR;
+    }
 
     expiration_ = expiration;
-    isRepeat_ = true;
+    interval_ = interval;
 
-    return ret;
+    repeat_ = (interval_.get().tv_sec || interval_.get().tv_nsec);
+
+    return CPPEVT_OK;
 }
 
-void Timer::callback()
+status_t Timer::get(Timestamp& expiration, Timestamp& interval)
+{
+    struct itimerspec it;
+    memset(&it, 0, sizeof(struct itimerspec));
+
+    int ret = ::timerfd_gettime(fd_, &it);
+    if (ret < 0)
+    {
+        std::cerr << "Cannot set timerfd: " << \
+                    std::strerror(errno) << \
+                    std::endl;
+        return CPPEVT_ERROR;
+    }
+
+    expiration = it.it_value;
+    interval = it.it_interval;
+
+    return CPPEVT_OK;
+}
+
+void Timer::callTimerCallback()
 {
     if (cb_)
         cb_();
 }
-
-
-

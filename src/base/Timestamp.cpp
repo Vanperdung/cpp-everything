@@ -21,6 +21,12 @@ Timestamp::Timestamp(struct timespec timestamp)
     timestamp_.tv_nsec = timestamp.tv_nsec;
 }
 
+Timestamp::Timestamp(uint64_t sec, uint64_t nsec)
+{
+    timestamp_.tv_sec = sec;
+    timestamp_.tv_nsec = nsec;
+}
+
 void Timestamp::now()
 {
     ::clock_gettime(CLOCK_MONOTONIC, &timestamp_);

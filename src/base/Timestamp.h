@@ -13,8 +13,9 @@ namespace cppevt
 class Timestamp
 {
 public:
-    Timestamp();
-    Timestamp(struct timespec timestamp);
+    explicit Timestamp();
+    explicit Timestamp(struct timespec timestamp);
+    explicit Timestamp(uint64_t sec, uint64_t nsec);
     ~Timestamp() = default;
 
     void now();
@@ -40,6 +41,21 @@ public:
     {
         timestamp_.tv_sec = timestamp.tv_sec;
         timestamp_.tv_nsec = timestamp.tv_nsec;
+
+        return *this;
+    }
+
+    Timestamp& operator+(const Timestamp& ts)
+    {
+        timestamp_.tv_sec += ts.get().tv_sec;
+        timestamp_.tv_nsec += ts.get().tv_nsec;
+
+        return *this;
+    }
+    Timestamp& operator+(struct timespec timestamp)
+    {
+        timestamp_.tv_sec += timestamp.tv_sec;
+        timestamp_.tv_nsec += timestamp.tv_nsec;
 
         return *this;
     }

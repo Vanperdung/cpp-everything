@@ -24,6 +24,8 @@ public:
     typedef std::function<void(uint32_t, void*)> EventCallback;
 
     int fd() const { return fd_; }
+    void set_fd(int fd) { fd_ = fd; }
+    
     uint32_t events() const { return events_; }
     uint32_t revents() const { return revents_; }
 

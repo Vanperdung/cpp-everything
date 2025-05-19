@@ -2,6 +2,7 @@
 #define __TIMER_H__
 
 #include <net/NonCopyable.h>
+#include <net/Channel.h>
 
 #include <base/Types.h>
 #include <base/Timestamp.h>
@@ -17,20 +18,25 @@ public:
     typedef std::function<void()> TimerCallback;
 
     explicit Timer();
-    ~Timer() = default;
+    ~Timer();
 
-    int create();
-    int setExpiration(const Timestamp& expiration);
+    status_t create();
+    status_t set(const Timestamp& expiration,
+                    const Timestamp& interval);
+    status_t get(Timestamp& expiration, Timestamp& interval);
 
-    int fd() { return fd_; }
-    void callback();
+    void callTimerCallback();
     void setCallback(const TimerCallback& cb) { cb_ = cb; }
 
+    Channel* channel() { return &channel_; }
+    int fd() { return fd_; }
+
 private:
+    bool repeat_;
     TimerCallback cb_;
-    bool isRepeat_;
-    double interval_;
+    Timestamp interval_;
     Timestamp expiration_;
+    Channel channel_;
     int fd_;
 };
 
