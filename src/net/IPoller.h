@@ -28,6 +28,8 @@ public:
     virtual status_t modifyChannel(Channel *channel) = 0;
     virtual status_t deleteChannel(Channel *channel) = 0;
 
+    virtual void detachAllChannels() = 0;
+
 protected:
     std::map<int, Channel*> channels_;
 };

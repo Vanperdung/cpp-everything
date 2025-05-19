@@ -24,6 +24,8 @@ Epoll::Epoll()
 
 Epoll::~Epoll()
 {
+    detachAllChannels();
+
     if (epollfd_ > 0)
         ::close(epollfd_);
 }
@@ -112,6 +114,16 @@ status_t Epoll::deleteChannel(Channel *channel)
     channels_.erase(fd);
 
     return CPPEVT_OK;
+}
+
+void Epoll::detachAllChannels()
+{
+    for (auto& entry : channels_)
+    {
+        Channel *channel = entry.second;
+        channel->onEventLoopOwnerDistroyed();
+        deleteChannel(channel);
+    }
 }
 
 void Epoll::update(int operation, Channel *channel)

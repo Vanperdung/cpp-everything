@@ -28,6 +28,8 @@ public:
     status_t modifyChannel(Channel *channel) override;
     status_t deleteChannel(Channel *channel) override;
 
+    void detachAllChannels() override;
+
 private:
     void update(int operation, Channel *channel);
     void fillActiveChannels(int numEvents, ChannelList *activeChannels); 

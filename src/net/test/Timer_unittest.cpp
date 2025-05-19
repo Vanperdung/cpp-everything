@@ -17,7 +17,7 @@ void eventCallback(uint32_t revents, void *data)
 
     if (revents & EPOLLIN)
     {
-        std::cout << "Timeout" << std::endl;
+        std::cout << "EPOLLIN" << std::endl;
 
         // should call read() because fd is in edge-triggered mode
         uint64_t numOfExpirations = 0;
