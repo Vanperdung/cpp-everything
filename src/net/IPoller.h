@@ -1,9 +1,9 @@
 #ifndef __IPOLLER_H__
 #define __IPOLLER_H__
 
-#include <net/NonCopyable.h>
 #include <net/Channel.h>
 
+#include <base/NonCopyable.h>
 #include <base/Types.h>
 #include <base/Timestamp.h>
 

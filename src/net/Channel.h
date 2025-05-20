@@ -1,9 +1,9 @@
 #ifndef __CHANNEL_H__
 #define __CHANNEL_H__
 
-#include <net/NonCopyable.h>
 #include <net/EventLoop.h>
 
+#include <base/NonCopyable.h>
 #include <base/Types.h>
 
 #include <functional>
