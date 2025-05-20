@@ -11,22 +11,6 @@ void timerCallback(void)
     std::cout << "In timer callback" << std::endl;
 }
 
-void eventCallback(uint32_t revents, void *data)
-{
-    cppevt::Timer *timer = static_cast<cppevt::Timer*>(data);
-
-    if (revents & EPOLLIN)
-    {
-        std::cout << "EPOLLIN" << std::endl;
-
-        // should call read() because fd is in edge-triggered mode
-        uint64_t numOfExpirations = 0;
-        ::read(timer->fd(), &numOfExpirations, sizeof(uint64_t));
-    }
-
-    timer->callTimerCallback();
-}
-
 int main(int argc, char *argv[])
 {
     try
@@ -39,9 +23,6 @@ int main(int argc, char *argv[])
         timer.create();
         timer.set(expiration, interval);
         timer.setCallback(timerCallback);
-        timer.channel()->set_events(EPOLLIN | EPOLLET);
-        timer.channel()->setEventCallback(eventCallback);
-        timer.channel()->setEventData(static_cast<void*>(&timer));
 
         cppevt::EventLoop eventLoop;
         eventLoop.newEpoll();

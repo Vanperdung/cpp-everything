@@ -32,6 +32,8 @@ public:
     int fd() { return fd_; }
 
 private:
+    void expiredEventHandler(uint32_t revents, void *data);
+
     bool repeat_;
     TimerCallback cb_;
     Timestamp interval_;
