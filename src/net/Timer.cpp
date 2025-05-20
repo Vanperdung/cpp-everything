@@ -6,6 +6,7 @@
 
 #include <sys/timerfd.h>
 #include <unistd.h>
+#include <sys/epoll.h>
 
 using namespace cppevt;
 
@@ -36,7 +37,11 @@ status_t Timer::create()
 
     fd_ = fd;
     channel_.set_fd(fd);
-
+    channel_.set_events(EPOLLIN | EPOLLET);
+    channel_.setEventCallback([this](uint32_t revents, void *data) {
+        this->expiredEventHandler(revents, data);
+    });
+    
     return CPPEVT_OK;
 }
 
@@ -93,4 +98,15 @@ void Timer::callTimerCallback()
 {
     if (cb_)
         cb_();
+}
+
+void Timer::expiredEventHandler(uint32_t revents, void *data)
+{
+    if (revents & EPOLLIN)
+    {
+        uint64_t numOfExpirations = 0;
+        ssize_t n = ::read(fd_, &numOfExpirations, sizeof(uint64_t));
+        if (n == static_cast<ssize_t>(sizeof(numOfExpirations)))
+            callTimerCallback();
+    }
 }
