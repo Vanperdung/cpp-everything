@@ -11,11 +11,12 @@ namespace cppevt
 class PThreadMutex : private NonCopyable
 {
 public:
-    PThreadMutex();
+    explicit PThreadMutex();
     ~PThreadMutex();
 
     void lock();
     void unlock();
+    bool tryLock();
 
 private:
     pthread_mutex_t mutex_;
