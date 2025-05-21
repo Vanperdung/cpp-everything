@@ -21,3 +21,9 @@ void PThreadMutex::unlock()
 {
     pthread_mutex_unlock(&mutex_);
 }
+
+// Try to lock the mutex, return true if success, false if failed
+[[nodiscard]] bool PThreadMutex::tryLock()
+{
+    return pthread_mutex_trylock(&mutex_) == 0;
+}
