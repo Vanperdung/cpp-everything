@@ -1,10 +1,10 @@
 #ifndef __EVENT_LOOP_H__
 #define __EVENT_LOOP_H__
 
-#include <net/NonCopyable.h>
 #include <net/IPoller.h>
 #include <net/Channel.h>
 
+#include <base/NonCopyable.h>
 #include <base/Types.h>
 #include <base/Timestamp.h>
 
